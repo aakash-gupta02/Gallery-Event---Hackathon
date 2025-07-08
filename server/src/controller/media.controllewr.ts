@@ -46,7 +46,7 @@ export const uploadMedia = async (req: Request, res: Response): Promise<void> =>
                     : undefined;
 
             if (!type) return [];
-            
+
             return [{
                 url: file.path,
                 type: type as "image" | "video",
@@ -70,6 +70,7 @@ export const uploadMedia = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
+// all media
 export const getMedia = async (req: Request, res: Response): Promise<void> => {
     try {
         const media = await mediaRepo.find({
@@ -90,7 +91,7 @@ export const getMedia = async (req: Request, res: Response): Promise<void> => {
 // approving nedia
 export const approveMedia = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { mediaId } = req.body;
+        const { mediaId } = req.params;
 
         if (!mediaId) {
             res.status(400).json({ message: "Media ID is required" });
@@ -117,10 +118,10 @@ export const approveMedia = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-// delete media
+// delete media by id
 export const deleteMedia = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { mediaId } = req.body;
+        const { mediaId } = req.params;
         const userId = (req as any).user.id;
 
         if (!mediaId) {
@@ -171,6 +172,12 @@ export const getMediaByEvent = async (req: Request, res: Response): Promise<void
             return;
         }
 
+        const event = await eventRepo.findOneBy({ id: parseInt(eventId) });
+        if (!event) { 
+            res.status(404).json({ message: "Event not found" });
+            return;
+        }
+
         const media = await mediaRepo.find({
             where: { event: { id: parseInt(eventId) } },
             relations: ["user", "event"],
@@ -179,6 +186,7 @@ export const getMediaByEvent = async (req: Request, res: Response): Promise<void
 
         res.status(200).json({
             message: "Media retrieved successfully",
+             event: event ,
             data: media,
         });
     } catch (error) {
@@ -238,7 +246,7 @@ export const getMediaById = async (req: Request, res: Response): Promise<void> =
 
 export const rejectMedia = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { mediaId } = req.body;
+        const { mediaId } = req.params;
 
         if (!mediaId) {
             res.status(400).json({ message: "Media ID is required" });
