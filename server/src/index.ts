@@ -6,10 +6,10 @@ import authRoute from "./routes/auth.route";
 import eventRoute from "./routes/event.route";
 import mediaRoute from "./routes/media.route";
 import commentRoute from "./routes/comment.route";
+import likeRoute from "./routes/like.route";
 
 import express from "express"
 import { datasource } from "./config/datasource"
-import { authMiddleware } from "./middleware/autth.middleware";
 
 const app = express()
 
@@ -22,10 +22,11 @@ app.use("/auth", authRoute)
 app.use("/event", eventRoute)
 app.use("/media", mediaRoute)
 app.use("/comment", commentRoute)
+app.use("/like", likeRoute)
 
-app.get("/test", authMiddleware , (req: Request, res: Response) => {
-    res.send("Welcome to the API, " + (req as any).user.isAdmin);
-});
+app.get("/", (req: Request, res: Response) => {
+    res.status(200).json({ message: "Welcome to Gallery Event API" })
+})
 
 
 datasource.initialize().then(() => {
