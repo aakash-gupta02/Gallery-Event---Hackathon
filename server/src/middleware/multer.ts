@@ -13,38 +13,32 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: (req, file) => {
-    // Determine resource type based on mimetype
-    const resourceType = file.mimetype.startsWith('video') ? 'video' : 'image';
+  params: async (req, file) => {
+    const isVideo = file.mimetype.startsWith('video');
     
     return {
       folder: 'office_events',
-      resource_type: resourceType,
-      allowed_formats: resourceType === 'video' 
-        ? ['mp4', 'mov', 'avi'] 
-        : ['jpg', 'png', 'jpeg', 'gif'],
-      format: resourceType === 'video' ? undefined : 'jpg', // Auto-convert images to JPG
+      resource_type: isVideo ? 'video' : 'image',
+      allowed_formats: isVideo ? ['mp4', 'mov', 'avi'] : ['jpg', 'jpeg', 'png', 'gif'],
     };
   },
 });
 
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = [
-      'image/jpeg', 'image/png', 'image/gif', 
-      'video/mp4', 'video/quicktime', 'video/avi'
-    ];
-    allowedTypes.includes(file.mimetype) 
-      ? cb(null, true) 
-      : cb(new Error('Invalid file type'));
+const fileFilter = (req: Express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  const allowedTypes = [
+    'image/jpeg', 'image/png', 'image/gif',
+    'video/mp4', 'video/quicktime', 'video/avi'
+  ];
+
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Unsupported file type'));
   }
-});
+};
 
-export const mediaUpload = multer({ 
+export const mediaUpload = multer({
   storage,
-  limits: { fileSize: 100 * 1024 * 1024 } // 100MB for videos
-}).array('media', 10); // Max 10 files
-
-export default upload;
+  fileFilter,
+  limits: { fileSize: 100 * 1024 * 1024 },
+}).array('media', 10);
