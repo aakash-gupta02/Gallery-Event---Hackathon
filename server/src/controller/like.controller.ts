@@ -9,19 +9,19 @@ const mediaRepository = datasource.getRepository(Media);
 
 
 export const createLike = async (req: Request, res: Response): Promise<void> => {
-    const { mediaId } = req.body;
+    const { mediaId } = req.params;
     const userId = (req as any).user.id;
 
     try {
         const user = await userRepository.findOneBy({ id: userId });
-        const media = await mediaRepository.findOneBy({ id: mediaId });  
+        const media = await mediaRepository.findOneBy({ id: parseInt(mediaId) });  
         if (!user || !media) {
             res.status(404).json({ message: "User or Media not found" });
             return;
         }
         // Check if the like already exists
         const existingLike = await likeRepository.findOne({
-            where: { user: { id: userId }, media: { id: mediaId } }
+            where: { user: { id: userId }, media: { id: parseInt(mediaId) } }
         }); 
         if (existingLike) {
             res.status(400).json({ message: "You have already liked this media" });
@@ -31,7 +31,7 @@ export const createLike = async (req: Request, res: Response): Promise<void> => 
         like.user = user;
         like.media = media;
         const savedLike = await likeRepository.save(like);
-        res.status(201).json({
+        res.status(201).json({ message: "Like created successfully",
             id: savedLike.id,
             user: {
                 id: user.id,
@@ -52,7 +52,7 @@ export const createLike = async (req: Request, res: Response): Promise<void> => 
 }
 
 export const removeLike = async (req: Request, res: Response): Promise<void> => {
-    const { mediaId } = req.body;
+    const { mediaId } = req.params;
     const userId = (req as any).user.id;
 
     try {

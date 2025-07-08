@@ -4,8 +4,8 @@ import { authMiddleware } from "../middleware/autth.middleware";
 
 const router = Router();
 
-router.post("/add", authMiddleware, createLike);
-router.delete("/remove", authMiddleware, removeLike);
+router.post("/add/:mediaId", authMiddleware, createLike);
+router.delete("/remove/:mediaId", authMiddleware, removeLike);
 router.get("/get/:mediaId", authMiddleware, getLikes )
 
 export default router;
