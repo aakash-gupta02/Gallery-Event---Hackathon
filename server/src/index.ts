@@ -5,6 +5,7 @@ import cors from "cors"
 import authRoute from "./routes/auth.route";
 import eventRoute from "./routes/event.route";
 import mediaRoute from "./routes/media.route";
+import commentRoute from "./routes/comment.route";
 
 import express from "express"
 import { datasource } from "./config/datasource"
@@ -20,6 +21,7 @@ const port = 3000
 app.use("/auth", authRoute)
 app.use("/event", eventRoute)
 app.use("/media", mediaRoute)
+app.use("/comment", commentRoute)
 
 app.get("/test", authMiddleware , (req: Request, res: Response) => {
     res.send("Welcome to the API, " + (req as any).user.isAdmin);
