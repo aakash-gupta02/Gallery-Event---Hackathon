@@ -3,10 +3,14 @@ import { datasource } from "../config/datasource";
 import { Media } from "../entity/Media";
 import { User } from "../entity/User";
 import { Event } from "../entity/Event";
+import { Comment } from "../entity/Comment";
+import { Like } from "../entity/Like";
 
 const mediaRepo = datasource.getRepository(Media);
 const userRepo = datasource.getRepository(User);
 const eventRepo = datasource.getRepository(Event);
+const commentRepo = datasource.getRepository(Comment);
+const likeRepo = datasource.getRepository(Like);
 
 // upload meda
 export const uploadMedia = async (req: Request, res: Response): Promise<void> => {
@@ -178,16 +182,30 @@ export const getMediaByEvent = async (req: Request, res: Response): Promise<void
             return;
         }
 
+        // Get all media for the event
         const media = await mediaRepo.find({
-            where: { event: { id: parseInt(eventId) } },
+            where: { event: { id: parseInt(eventId) }, approved: true },
             relations: ["user", "event"],
             order: { createdAt: "DESC" },
         });
 
+        // For each media, get comment and like counts
+        const mediaWithCounts = await Promise.all(
+            media.map(async (m) => {
+                const commentCount = await commentRepo.count({ where: { media: { id: m.id } } });
+                const likeCount = await likeRepo.count({ where: { media: { id: m.id } } });
+                return {
+                    ...m,
+                    commentCount,
+                    likeCount,
+                };
+            })
+        );
+
         res.status(200).json({
             message: "Media retrieved successfully",
-             event: event ,
-            data: media,
+            event: event,
+            data: mediaWithCounts,
         });
     } catch (error) {
         console.error("Error retrieving media by event:", error);
