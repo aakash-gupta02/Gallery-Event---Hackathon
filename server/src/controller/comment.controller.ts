@@ -66,7 +66,8 @@ export const getComments = async (req: Request, res: Response): Promise<void> =>
             user: comment.user ? {
                 id: comment.user.id,
                 name: comment.user.name,
-                email: comment.user.email
+                email: comment.user.email,
+                profileImage: comment.user.profileImage,
             } : null,
             media: comment.media ? {
                 id: comment.media.id,
