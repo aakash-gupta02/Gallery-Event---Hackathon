@@ -14,6 +14,12 @@ export class Event {
   @Column()
   title!: string;
 
+  @Column({ default: "" })
+  description!: string;
+
+  @Column({ default: "https://www.visionvivaah.com/blog/wp-content/uploads/2019/10/Best-Event-Management-Company-In-Mumbai.jpg" })
+  mediaUrl!: string;
+
   @Column()
   date!: Date;
 
