@@ -8,63 +8,54 @@ import {
 } from "react-icons/fi";
 import api from "../../services/BaseUrl";
 
-
-
 function formatReadableDate(dateString) {
-    const date = new Date(dateString);
-    if (isNaN(date)) return "";
-    return date.toLocaleString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
+  const date = new Date(dateString);
+  if (isNaN(date)) return "";
+  return date.toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 const CommentSection = ({ mediaId }) => {
-
   const [comments, setComments] = useState([]);
-  const [media, setmedia] = useState("")
+  const [media, setMedia] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [likes, setLikes] = useState(1243);
+  const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
 
-
-  // Fetch comments for the media
   useEffect(() => {
-    const fetchComments = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get(`/comment/get/${mediaId}`);
-        const mediaResponse = await api.get(`/media/${mediaId}`);
-        setmedia(mediaResponse.data.data);
-        console.log("Media Data:", mediaResponse.data.data);
-        console.log( "Comments" ,response.data);
-        
-
-        
-
-        setComments(response.data);
+        const [commentRes, mediaRes, likeRes] = await Promise.all([
+          api.get(`/comment/get/${mediaId}`),
+          api.get(`/media/${mediaId}`),
+          api.get(`/like/get/${mediaId}`),
+        ]);
+        setComments(commentRes.data);
+        setMedia(mediaRes.data.data);
+        setLikes(likeRes.data.totalLikes || 0);
         setLoading(false);
       } catch (err) {
         setError("Failed to load comments");
         setLoading(false);
       }
     };
-
-    fetchComments();
+    fetchData();
   }, [mediaId]);
 
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
-
     try {
-      const response = await api.post("/comments/add", {
+      const response = await api.post("/comment/add", {
         mediaId,
-        content: newComment,
+        text: newComment,
       });
       setComments([...comments, response.data]);
       setNewComment("");
@@ -76,10 +67,10 @@ const CommentSection = ({ mediaId }) => {
   const handleLike = async () => {
     try {
       if (isLiked) {
-        await api.delete(`/likes/media/${mediaId}`);
+        await api.delete(`/like/media/${mediaId}`);
         setLikes(likes - 1);
       } else {
-        await api.post(`/likes/media/${mediaId}`);
+        await api.post(`/like/media/${mediaId}`);
         setLikes(likes + 1);
       }
       setIsLiked(!isLiked);
@@ -90,25 +81,10 @@ const CommentSection = ({ mediaId }) => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      await api.delete(`/comments/delete/${commentId}`);
+      await api.delete(`/comment/delete/${commentId}`);
       setComments(comments.filter((comment) => comment.id !== commentId));
     } catch (err) {
       setError("Failed to delete comment");
-    }
-  };
-
-  const handleUpdateComment = async (commentId, newContent) => {
-    try {
-      const response = await api.put(`/comments/update/${commentId}`, {
-        content: newContent,
-      });
-      setComments(
-        comments.map((comment) =>
-          comment.id === commentId ? response.data : comment
-        )
-      );
-    } catch (err) {
-      setError("Failed to update comment");
     }
   };
 
@@ -134,15 +110,28 @@ const CommentSection = ({ mediaId }) => {
     );
   }
 
+  // Dynamic image container style
+  const imageContainerStyle = {
+    aspectRatio: "auto",
+    maxHeight: "80vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "#000",
+  };
+
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-6 lg:p-8">
       <div className="bg-bg-surface rounded-lg shadow-card overflow-hidden">
         <div className="flex flex-col md:flex-row">
           {/* Left Side - Image */}
-          <div className="w-full md:w-1/2 lg:w-3/5 bg-black flex items-center justify-center">
+          <div
+            className="w-full md:w-1/2 lg:w-3/5 flex items-center justify-center"
+            style={imageContainerStyle}
+          >
             <img
-              src={ media.url }
-              alt="Post"
+              src={media?.url}
+              alt={media?.title || "Post"}
               className="w-full h-auto max-h-[80vh] object-contain"
             />
           </div>
@@ -153,12 +142,17 @@ const CommentSection = ({ mediaId }) => {
             <div className="p-4 border-b border-border flex items-center">
               <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
                 <img
-                  src={ media.user?.profileImage }
+                  src={
+                    media?.user?.profileImage ||
+                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                  }
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="font-semibold text-text-heading"> { media.user?.name } </div>
+              <div className="font-semibold text-text-heading">
+                {media?.user?.name || "Unknown"}
+              </div>
               <button className="ml-auto text-text-muted hover:text-text-heading">
                 <FiMoreHorizontal />
               </button>
@@ -167,28 +161,30 @@ const CommentSection = ({ mediaId }) => {
             {/* Comments */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {/* Post caption */}
-              
-              <div className="flex">
+              {/* <div className="flex">
                 <div className="w-8 h-8 rounded-full overflow-hidden mr-3 flex-shrink-0">
                   <img
-                    src="https://randomuser.me/api/portraits/women/44.jpg"
+                    src={
+                      media?.user?.profileImage ||
+                      "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                    }
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
                   <span className="font-semibold text-text-heading">
-                    jane_doe
+                    {media?.user?.name || "Unknown"}
                   </span>
                   <span className="text-text-body">
                     {" "}
-                    This is such a beautiful sunset! 😍 #nature #sunset
+                    {media?.description || ""}
                   </span>
                   <div className="text-xs text-text-muted mt-1">
-                    2 hours ago
+                    {formatReadableDate(media?.createdAt)}
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Comments list */}
               {comments.map((comment) => (
@@ -197,7 +193,7 @@ const CommentSection = ({ mediaId }) => {
                     <img
                       src={
                         comment.user?.profileImage ||
-                        "https://randomuser.me/api/portraits/men/32.jpg"
+                        "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                       }
                       alt="Profile"
                       className="w-full h-full object-cover"
@@ -209,10 +205,7 @@ const CommentSection = ({ mediaId }) => {
                         <span className="font-semibold text-text-heading">
                           {comment.user?.name || "Anonymous"}
                         </span>
-                        <span className="text-text-body">
-                          {" "}
-                          {comment.text}
-                        </span>
+                        <span className="text-text-body"> {comment.text}</span>
                       </div>
                       <button
                         onClick={() => handleDeleteComment(comment.id)}
@@ -222,13 +215,12 @@ const CommentSection = ({ mediaId }) => {
                       </button>
                     </div>
                     <div className="text-xs text-text-muted mt-1">
-            
-
                       {formatReadableDate(comment.createdAt)}
                     </div>
                   </div>
                 </div>
               ))}
+
             </div>
 
             {/* Action buttons */}
@@ -255,7 +247,9 @@ const CommentSection = ({ mediaId }) => {
               <div className="font-semibold text-text-heading mb-1">
                 {likes.toLocaleString()} likes
               </div>
-              <div className="text-xs text-text-muted mb-3">2 hours ago</div>
+              <div className="text-xs text-text-muted mb-3">
+                {formatReadableDate(media?.createdAt)}
+              </div>
 
               {/* Comment input */}
               <form
@@ -282,6 +276,8 @@ const CommentSection = ({ mediaId }) => {
                 </button>
               </form>
             </div>
+
+
           </div>
         </div>
       </div>
