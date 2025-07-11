@@ -12,6 +12,7 @@ import {
 import { IoMdHeartEmpty } from "react-icons/io";
 import api from "../../services/BaseUrl";
 import CommentSection from "./CommentSection";
+import MediaUpload from "./MediaUpload";
 
 const EventMediaByID = () => {
   const { id } = useParams();
@@ -24,6 +25,7 @@ const EventMediaByID = () => {
   const [filter, setFilter] = useState("all");
   const [mediaLikes, setMediaLikes] = useState({});
   const [mediaLikeStatus, setMediaLikeStatus] = useState({});
+  const [showUpload, setshowUpload] = useState(false);
 
   const fetchEventMediaByID = async () => {
     try {
@@ -163,13 +165,22 @@ const EventMediaByID = () => {
       <div className="max-w-7xl mx-auto">
         {/* Event Header */}
         <div className="mb-10 bg-white dark:bg-bg-surface rounded-2xl shadow-lg p-8 border border-border">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center text-primary font-medium hover:text-primary-hover mb-6 transition-colors text-base"
-          >
-            <FiArrowLeft className="mr-2 text-lg" />
-            Back to Events
-          </button>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center text-primary font-medium hover:text-primary-hover transition-colors text-base"
+            >
+              <FiArrowLeft className="mr-2 text-lg" />
+              Back to Events
+            </button>
+            <button
+              onClick={() => setshowUpload(true)}
+              className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-primary-hover transition-colors text-base font-semibold"
+            >
+              <FiImage className="text-lg" />
+              Upload Media
+            </button>
+          </div>
 
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <div className="md:w-1/3 w-full flex-shrink-0">
@@ -477,6 +488,22 @@ const EventMediaByID = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <CommentSection mediaId={showComments.id} />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="">
+          {showUpload && (
+            <div
+              className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"
+              onClick={() => setshowUpload(false)}
+            >
+              <div
+                className="bg-bg-surface rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MediaUpload eventId={mediaData.event.id} />
               </div>
             </div>
           )}
