@@ -10,7 +10,6 @@ import {
   FiMessageSquare,
 } from "react-icons/fi";
 import { IoMdHeartEmpty } from "react-icons/io";
-
 import api from "../../services/BaseUrl";
 import CommentSection from "./CommentSection";
 
@@ -23,33 +22,37 @@ const EventMediaByID = () => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showComments, setShowComments] = useState(null);
   const [filter, setFilter] = useState("all");
-
-  const [likes, setLikes] = useState(0);
-
-  const [isLiked, setIsLiked] = useState(false);
-
-  const handleLike = async () => {
-    try {
-      if (isLiked) {
-        await api.delete(`/like/remove/${mediaId}`);
-        setLikes(likes - 1);
-      } else {
-        await api.post(`/like/add/${mediaId}`);
-        setLikes(likes + 1);
-      }
-      setIsLiked(!isLiked);
-    } catch (err) {
-      setError("Failed to update like");
-    }
-  };
+  const [mediaLikes, setMediaLikes] = useState({});
+  const [mediaLikeStatus, setMediaLikeStatus] = useState({});
 
   const fetchEventMediaByID = async () => {
     try {
       setLoading(true);
       const response = await api.get(`/media/event/${id}`);
       setMediaData(response.data);
-      console.log("Fetched media data:", response.data);
 
+      // Initialize likes and like status for each media
+      const likesData = {};
+      const likeStatusData = {};
+
+      await Promise.all(
+        response.data.data.map(async (media) => {
+          // Get like count
+          const likeRes = await api.get(`/like/get/${media.id}`);
+          likesData[media.id] = likeRes.data.totalLikes || 0;
+
+          // Check if current user liked the media
+          try {
+            const isLikedRes = await api.get(`/like/is-liked/${media.id}`);
+            likeStatusData[media.id] = isLikedRes.data.liked;
+          } catch (err) {
+            likeStatusData[media.id] = false;
+          }
+        })
+      );
+
+      setMediaLikes(likesData);
+      setMediaLikeStatus(likeStatusData);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching event media by ID:", error);
@@ -57,17 +60,30 @@ const EventMediaByID = () => {
       setLoading(false);
     }
   };
-  
-    const checkLiked = async () => {
-      try {
-        const res = await api.get(`/like/is-liked/${mediaId}`);
-        console.log("Is Liked Response:", res.data.liked);
 
-        setIsLiked(res.data.liked);
-      } catch (err) {
-        setIsLiked(false);
+  const handleLike = async (mediaId) => {
+    try {
+      if (mediaLikeStatus[mediaId]) {
+        await api.delete(`/like/remove/${mediaId}`);
+        setMediaLikes((prev) => ({
+          ...prev,
+          [mediaId]: prev[mediaId] - 1,
+        }));
+      } else {
+        await api.post(`/like/add/${mediaId}`);
+        setMediaLikes((prev) => ({
+          ...prev,
+          [mediaId]: (prev[mediaId] || 0) + 1,
+        }));
       }
-    };
+      setMediaLikeStatus((prev) => ({
+        ...prev,
+        [mediaId]: !prev[mediaId],
+      }));
+    } catch (err) {
+      setError("Failed to update like");
+    }
+  };
 
   useEffect(() => {
     fetchEventMediaByID();
@@ -80,10 +96,12 @@ const EventMediaByID = () => {
 
     switch (filter) {
       case "most-liked":
-        return media.sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
+        return media.sort(
+          (a, b) => (mediaLikes[b.id] || 0) - (mediaLikes[a.id] || 0)
+        );
       case "most-commented":
         return media.sort(
-          (a, b) => (b.commentsCount || 0) - (a.commentsCount || 0)
+          (a, b) => (b.commentCount || 0) - (a.commentCount || 0)
         );
       default:
         return media;
@@ -288,19 +306,26 @@ const EventMediaByID = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  <span className="flex items-center text-sm text-text-muted">
-                    <FiHeart className="mr-1" /> {media.likeCount || 0}
-                  </span>
-
-                  <button onClick={handleLike}>
-                    {isLiked ? (
-                      <FiHeart className="text-error fill-error text-2xl " />
+                  <button
+                    className=" flex justify-center items-center text-text-muted gap-1 text-sm   "
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLike(media.id);
+                    }}
+                  >
+                    {mediaLikeStatus[media.id] ? (
+                      <FiHeart className="text-error fill-error" />
                     ) : (
-                      <IoMdHeartEmpty className="text-text-muted text-2xl " />
-                    )}
+                      <IoMdHeartEmpty className="text-text-muted" />
+                    )}{" "}
+                    {mediaLikes[media.id] || 0}
                   </button>
+
                   <span
-                    onClick={() => setShowComments(media)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowComments(media);
+                    }}
                     className="flex items-center text-sm text-text-muted"
                   >
                     <FiMessageSquare className="mr-1" />{" "}
@@ -398,12 +423,34 @@ const EventMediaByID = () => {
                     </div>
 
                     <div className="flex gap-4">
-                      <button className="flex items-center gap-1">
-                        <FiHeart /> {selectedMedia.likeCount || 0}
-                      </button>
-                      <button className="flex items-center gap-1">
-                        <FiMessageSquare /> {selectedMedia.commentCount || 0}
-                      </button>
+                      <div className="flex gap-3">
+                        <button
+                          className=" flex justify-center items-center  gap-1 text-sm   "
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleLike(selectedMedia.id);
+                          }}
+                        >
+                          {mediaLikeStatus[selectedMedia.id] ? (
+                            <FiHeart className="text-error fill-error" />
+                          ) : (
+                            <IoMdHeartEmpty className="" />
+                          )}{" "}
+                          {mediaLikes[selectedMedia.id] || 0}
+                        </button>
+
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowComments(selectedMedia);
+                          }}
+                          className="flex items-center text-sm"
+                        >
+                          <FiMessageSquare className="mr-1" />{" "}
+                          {selectedMedia.commentCount || 0}
+                        </span>
+                      </div>
+
                       <button
                         onClick={() => downloadMedia(selectedMedia.url)}
                         className="flex items-center gap-1 text-primary"
