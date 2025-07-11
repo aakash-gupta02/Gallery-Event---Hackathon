@@ -9,6 +9,8 @@ import {
   FiVideo,
   FiMessageSquare,
 } from "react-icons/fi";
+import { IoMdHeartEmpty } from "react-icons/io";
+
 import api from "../../services/BaseUrl";
 import CommentSection from "./CommentSection";
 
@@ -21,6 +23,25 @@ const EventMediaByID = () => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showComments, setShowComments] = useState(null);
   const [filter, setFilter] = useState("all");
+
+  const [likes, setLikes] = useState(0);
+
+  const [isLiked, setIsLiked] = useState(false);
+
+  const handleLike = async () => {
+    try {
+      if (isLiked) {
+        await api.delete(`/like/remove/${mediaId}`);
+        setLikes(likes - 1);
+      } else {
+        await api.post(`/like/add/${mediaId}`);
+        setLikes(likes + 1);
+      }
+      setIsLiked(!isLiked);
+    } catch (err) {
+      setError("Failed to update like");
+    }
+  };
 
   const fetchEventMediaByID = async () => {
     try {
@@ -36,6 +57,17 @@ const EventMediaByID = () => {
       setLoading(false);
     }
   };
+  
+    const checkLiked = async () => {
+      try {
+        const res = await api.get(`/like/is-liked/${mediaId}`);
+        console.log("Is Liked Response:", res.data.liked);
+
+        setIsLiked(res.data.liked);
+      } catch (err) {
+        setIsLiked(false);
+      }
+    };
 
   useEffect(() => {
     fetchEventMediaByID();
@@ -259,6 +291,14 @@ const EventMediaByID = () => {
                   <span className="flex items-center text-sm text-text-muted">
                     <FiHeart className="mr-1" /> {media.likeCount || 0}
                   </span>
+
+                  <button onClick={handleLike}>
+                    {isLiked ? (
+                      <FiHeart className="text-error fill-error text-2xl " />
+                    ) : (
+                      <IoMdHeartEmpty className="text-text-muted text-2xl " />
+                    )}
+                  </button>
                   <span
                     onClick={() => setShowComments(media)}
                     className="flex items-center text-sm text-text-muted"

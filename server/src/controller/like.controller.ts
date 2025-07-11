@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { Like } from "../entity/Like";
 import { User } from "../entity/User";  
 import { Media } from "../entity/Media";
@@ -108,3 +108,35 @@ export const getLikes = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 }
+
+
+export const isLiked = async (req: Request, res: Response): Promise<void> => {
+    const { mediaId } = req.params;
+    const userId = (req as any).user.id;
+    console.log(`Checking like status for user ${userId} on media ${mediaId}`);
+    
+    const parsedMediaId = parseInt(mediaId);
+
+    if (isNaN(parsedMediaId)) {
+        res.status(400).json({ message: "Invalid mediaId parameter" });
+        return;
+    }
+
+    try {
+        const like = await likeRepository.findOne({
+            where: { user: { id: userId }, media: { id: parsedMediaId } }
+        });
+
+        if (like) {
+            res.status(200).json({ liked: true });
+        } else {
+            res.status(200).json({ liked: false });
+        }
+        return;
+    } catch (error) {
+        console.error("Error checking like status:", error);
+        res.status(500).json({ message: "Internal server error" });
+        return;
+    }
+}
+

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createLike, getLikes, removeLike } from "../controller/like.controller";
+import { createLike, getLikes, isLiked, removeLike } from "../controller/like.controller";
 import { authMiddleware } from "../middleware/autth.middleware";
 
 const router = Router();
@@ -7,6 +7,7 @@ const router = Router();
 router.post("/add/:mediaId", authMiddleware, createLike);
 router.delete("/remove/:mediaId", authMiddleware, removeLike);
 router.get("/get/:mediaId", authMiddleware, getLikes )
+router.get("/is-liked/:mediaId", authMiddleware, isLiked); 
 
 export default router;
 

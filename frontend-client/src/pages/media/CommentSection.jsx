@@ -6,6 +6,7 @@ import {
   FiBookmark,
   FiMoreHorizontal,
 } from "react-icons/fi";
+import { IoMdHeartEmpty } from "react-icons/io";
 import api from "../../services/BaseUrl";
 
 function formatReadableDate(dateString) {
@@ -27,6 +28,7 @@ const CommentSection = ({ mediaId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [likes, setLikes] = useState(0);
+
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
@@ -46,7 +48,20 @@ const CommentSection = ({ mediaId }) => {
         setLoading(false);
       }
     };
+
+    const checkLiked = async () => {
+      try {
+        const res = await api.get(`/like/is-liked/${mediaId}`);
+        console.log("Is Liked Response:", res.data.liked);
+
+        setIsLiked(res.data.liked);
+      } catch (err) {
+        setIsLiked(false);
+      }
+    };
+
     fetchData();
+    checkLiked();
   }, [mediaId]);
 
   const handleAddComment = async (e) => {
@@ -67,10 +82,10 @@ const CommentSection = ({ mediaId }) => {
   const handleLike = async () => {
     try {
       if (isLiked) {
-        await api.delete(`/like/media/${mediaId}`);
+        await api.delete(`/like/remove/${mediaId}`);
         setLikes(likes - 1);
       } else {
-        await api.post(`/like/media/${mediaId}`);
+        await api.post(`/like/add/${mediaId}`);
         setLikes(likes + 1);
       }
       setIsLiked(!isLiked);
@@ -137,9 +152,9 @@ const CommentSection = ({ mediaId }) => {
           </div>
 
           {/* Right Side - Comment Section */}
-          <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col">
+          <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col h-[70vh] md:h-[80vh]">
             {/* Header */}
-            <div className="p-4 border-b border-border flex items-center">
+            <div className="p-4 border-b border-border flex items-center flex-shrink-0 bg-bg-surface z-10">
               <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
                 <img
                   src={
@@ -158,35 +173,8 @@ const CommentSection = ({ mediaId }) => {
               </button>
             </div>
 
-            {/* Comments */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {/* Post caption */}
-              {/* <div className="flex">
-                <div className="w-8 h-8 rounded-full overflow-hidden mr-3 flex-shrink-0">
-                  <img
-                    src={
-                      media?.user?.profileImage ||
-                      "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                    }
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <span className="font-semibold text-text-heading">
-                    {media?.user?.name || "Unknown"}
-                  </span>
-                  <span className="text-text-body">
-                    {" "}
-                    {media?.description || ""}
-                  </span>
-                  <div className="text-xs text-text-muted mt-1">
-                    {formatReadableDate(media?.createdAt)}
-                  </div>
-                </div>
-              </div> */}
-
-              {/* Comments list */}
+            {/* Comments List (Scrollable) */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-bg-surface">
               {comments.map((comment) => (
                 <div key={comment.id} className="flex group">
                   <div className="w-8 h-8 rounded-full overflow-hidden mr-3 flex-shrink-0">
@@ -220,41 +208,34 @@ const CommentSection = ({ mediaId }) => {
                   </div>
                 </div>
               ))}
-
             </div>
 
-            {/* Action buttons */}
-            <div className="p-4 border-t border-border">
-              <div className="flex space-x-4 mb-2">
-                <button
-                  onClick={handleLike}
-                  className={`text-2xl ${
-                    isLiked ? "text-error fill-error" : "text-text-muted"
-                  }`}
-                >
-                  <FiHeart />
-                </button>
-                <button className="text-2xl text-text-muted">
-                  <FiMessageSquare />
-                </button>
-                <button className="text-2xl text-text-muted">
-                  <FiSend />
-                </button>
-                <button className="text-2xl ml-auto text-text-muted">
-                  <FiBookmark />
-                </button>
-              </div>
-              <div className="font-semibold text-text-heading mb-1">
-                {likes.toLocaleString()} likes
-              </div>
-              <div className="text-xs text-text-muted mb-3">
-                {formatReadableDate(media?.createdAt)}
-              </div>
+            {/* Action buttons & Comment Input (Fixed at bottom) */}
+            <div className="border-t border-border bg-bg-surface flex flex-col flex-shrink-0">
+              <div className="p-4">
+                <div className="flex space-x-4 mb-2">
+       
 
+                  <button onClick={handleLike}>
+                    {isLiked ? (
+                      <FiHeart className="text-error fill-error text-2xl " />
+                    ) : (
+                      <IoMdHeartEmpty className="text-text-muted text-2xl " />
+                    )}
+                  </button>
+           
+                </div>
+                <div className="font-semibold text-text-heading mb-1">
+                  {likes.toLocaleString()} likes
+                </div>
+                <div className="text-xs text-text-muted mb-3">
+                  {formatReadableDate(media?.createdAt)}
+                </div>
+              </div>
               {/* Comment input */}
               <form
                 onSubmit={handleAddComment}
-                className="flex items-center border-t border-border pt-3"
+                className="flex items-center border-t border-border pt-3 px-4 pb-4 bg-bg-surface"
               >
                 <input
                   type="text"
@@ -276,8 +257,6 @@ const CommentSection = ({ mediaId }) => {
                 </button>
               </form>
             </div>
-
-
           </div>
         </div>
       </div>
