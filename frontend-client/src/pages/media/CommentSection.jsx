@@ -138,7 +138,7 @@ const CommentSection = ({ mediaId }) => {
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-6 lg:p-8">
       <div className="bg-bg-surface rounded-lg shadow-card overflow-hidden">
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row h-[90vh] md:h-auto">
           {/* Left Side - Image */}
           <div
             className="w-full md:w-1/2 lg:w-3/5 flex items-center justify-center"
@@ -152,7 +152,7 @@ const CommentSection = ({ mediaId }) => {
           </div>
 
           {/* Right Side - Comment Section */}
-          <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col h-[70vh] md:h-[80vh]">
+          <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col h-[90vh] md:h-[80vh]">
             {/* Header */}
             <div className="p-4 border-b border-border flex items-center flex-shrink-0 bg-bg-surface z-10">
               <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
@@ -174,7 +174,16 @@ const CommentSection = ({ mediaId }) => {
             </div>
 
             {/* Comments List (Scrollable) */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-bg-surface">
+            <div
+              className="
+                flex-1 overflow-y-auto p-4 space-y-4 bg-bg-surface
+                min-h-0
+                "
+              style={{
+                // For mobile: ensure comment list doesn't get pushed out of view
+                maxHeight: "calc(100vh - 220px)",
+              }}
+            >
               {comments.map((comment) => (
                 <div key={comment.id} className="flex group">
                   <div className="w-8 h-8 rounded-full overflow-hidden mr-3 flex-shrink-0">
@@ -214,8 +223,6 @@ const CommentSection = ({ mediaId }) => {
             <div className="border-t border-border bg-bg-surface flex flex-col flex-shrink-0">
               <div className="p-4">
                 <div className="flex space-x-4 mb-2">
-       
-
                   <button onClick={handleLike}>
                     {isLiked ? (
                       <FiHeart className="text-error fill-error text-2xl " />
@@ -223,7 +230,6 @@ const CommentSection = ({ mediaId }) => {
                       <IoMdHeartEmpty className="text-text-muted text-2xl " />
                     )}
                   </button>
-           
                 </div>
                 <div className="font-semibold text-text-heading mb-1">
                   {likes.toLocaleString()} likes
@@ -260,6 +266,8 @@ const CommentSection = ({ mediaId }) => {
           </div>
         </div>
       </div>
+      {/* Responsive fix: add extra bottom padding for mobile so input is visible above keyboard */}
+      <div className="block md:hidden h-8" />
     </div>
   );
 };

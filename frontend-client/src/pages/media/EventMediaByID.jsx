@@ -484,7 +484,7 @@ const EventMediaByID = () => {
               onClick={() => setShowComments(false)}
             >
               <div
-                className="bg-bg-surface rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+                className="bg-bg-surface rounded-xl max-w-4xl w-full max-h-[120vh] overflow-hidden flex flex-col p-6"
                 onClick={(e) => e.stopPropagation()}
               >
                 <CommentSection mediaId={showComments.id} />
@@ -493,7 +493,9 @@ const EventMediaByID = () => {
           )}
         </div>
 
-        <div className="">
+
+{/* media uploads */}
+        <div>
           {showUpload && (
             <div
               className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"

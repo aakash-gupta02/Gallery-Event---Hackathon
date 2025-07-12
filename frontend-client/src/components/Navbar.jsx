@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaUserCircle,
@@ -13,24 +13,39 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  console.log(user);
 
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
-  React.useEffect(() => {
+  // useEffect(() => {
+  //   const handler = (e) => {
+  //     if (menuRef.current && !menuRef.current.contains(e.target))
+  //       setOpen(false);
+  //   };
+  //   document.addEventListener("mousedown", handler);
+  //   return () => document.removeEventListener("mousedown", handler);
+  // }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    // Only apply for desktop (md and up)
     const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target))
+      // Only close if desktop dropdown is open and click is outside menuRef
+      if (
+        window.innerWidth >= 768 &&
+        menuRef.current &&
+        !menuRef.current.contains(e.target)
+      ) {
         setOpen(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [open]);
 
   return (
     <nav className="w-full bg-bg-surface border-b border-border shadow-sm px-6 py-3 flex items-center justify-between">
-      {/* Logo */}
       <div
         className="flex items-center gap-2 cursor-pointer select-none"
         onClick={() => navigate("/")}
@@ -146,6 +161,7 @@ const Navbar = () => {
                   <FaUser /> Profile
                 </button>
 
+                {/* admin */}
                 {user.isAdmin && (
                   <button
                     className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
@@ -158,7 +174,8 @@ const Navbar = () => {
                   </button>
                 )}
 
-                <button
+                {/* setting */}
+                {/* <button
                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
                   onClick={() => {
                     setOpen(false);
@@ -166,8 +183,9 @@ const Navbar = () => {
                   }}
                 >
                   <FaCog /> Settings
-                </button>
+                </button> */}
 
+                {/* home */}
                 <button
                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
                   onClick={() => {
@@ -190,7 +208,9 @@ const Navbar = () => {
                   </svg>
                   Home
                 </button>
-                <button
+
+                {/* about */}
+                {/* <button
                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
                   onClick={() => {
                     setOpen(false);
@@ -211,7 +231,10 @@ const Navbar = () => {
                     ></path>
                   </svg>
                   About
-                </button>
+                </button> */}
+
+                {/* features */}
+                {/* 
                 <button
                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
                   onClick={() => {
@@ -233,12 +256,14 @@ const Navbar = () => {
                     ></path>
                   </svg>
                   Features
-                </button>
+                </button> */}
+
+                {/* gallery/ event */}
                 <button
                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
                   onClick={() => {
                     setOpen(false);
-                    navigate("/gallery");
+                    navigate("/event");
                   }}
                 >
                   <svg
@@ -256,6 +281,8 @@ const Navbar = () => {
                   </svg>
                   Gallery
                 </button>
+
+                {/* logout */}
                 <button
                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-error/10 focus:bg-error/10 text-error border-t border-border mt-2 transition-colors focus:outline-none"
                   onClick={() => {
@@ -354,23 +381,51 @@ const Navbar = () => {
                 >
                   Profile
                 </button>
+
+                {/* admin */}
+                {user.isAdmin && (
+                  <button
+                    className="text-text-body text-left py-2 px-2 rounded hover:bg-primary-light focus:bg-primary-light transition-colors focus:outline-none"
+                    onClick={() => {
+                      setOpen(false);
+                      navigate("/admin");
+                    }}
+                  >
+                    Admin DashBoard
+                  </button>
+                )}
+
+                {/* home */}
                 <button
                   className="text-text-body text-left py-2 px-2 rounded hover:bg-primary-light focus:bg-primary-light transition-colors focus:outline-none"
                   onClick={() => {
                     setOpen(false);
-                    navigate("/settings");
+                    navigate("/");
                   }}
                 >
-                  Settings
+                  Home
                 </button>
+
+                {/* gallery */}
                 <button
-                  className="text-error text-left py-2 px-2 rounded hover:bg-error/10 focus:bg-error/10 border-t border-border mt-2 transition-colors focus:outline-none"
+                  className="text-text-body text-left py-2 px-2 rounded hover:bg-primary-light focus:bg-primary-light transition-colors focus:outline-none"
+                  onClick={() => {
+                    setOpen(false);
+                    navigate("/event");
+                  }}
+                >
+                  Gallery
+                </button>
+
+                {/* logout */}
+                <button
+                  className="w-full flex items-center gap-2 px-4 py-2 hover:bg-error/10 focus:bg-error/10 text-error border-t border-border mt-2 transition-colors focus:outline-none"
                   onClick={() => {
                     setOpen(false);
                     logout();
                   }}
                 >
-                  Logout
+                  <FaSignOutAlt /> Logout
                 </button>
               </>
             ) : (
