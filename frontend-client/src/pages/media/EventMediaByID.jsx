@@ -477,21 +477,21 @@ const EventMediaByID = () => {
         </div>
 
         {/* Comments Section */}
-        <div className="max-w-7xl mx-auto">
-          {showComments && (
-            <div
-              className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"
-              onClick={() => setShowComments(false)}
-            >
-              <div
-                className="bg-bg-surface rounded-xl max-w-4xl w-full max-h-[120vh] overflow-hidden flex flex-col p-6"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <CommentSection mediaId={showComments.id} />
-              </div>
-            </div>
-          )}
+<div className="max-w-7xl mx-auto">
+      {showComments && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => setShowComments(false)}
+        >
+          <div
+            className="bg-bg-surface rounded-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CommentSection mediaId={showComments.id} />
+          </div>
         </div>
+      )}
+    </div>
 
 
 {/* media uploads */}

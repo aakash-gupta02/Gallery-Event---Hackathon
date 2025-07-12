@@ -125,7 +125,7 @@ const CommentSection = ({ mediaId }) => {
     );
   }
 
-  // Dynamic image container style
+  // img box
   const imageContainerStyle = {
     aspectRatio: "auto",
     maxHeight: "80vh",
@@ -134,16 +134,13 @@ const CommentSection = ({ mediaId }) => {
     justifyContent: "center",
     background: "#000",
   };
-
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-6 lg:p-8">
-      <div className="bg-bg-surface rounded-lg shadow-card overflow-hidden">
-        <div className="flex flex-col md:flex-row h-[90vh] md:h-auto">
-          {/* Left Side - Image */}
-          <div
-            className="w-full md:w-1/2 lg:w-3/5 flex items-center justify-center"
-            style={imageContainerStyle}
-          >
+    <div className="max-w-5xl mx-auto p-0 md:p-6 lg:p-8">
+      <div className="bg-bg-surface rounded-lg shadow-card overflow-hidden h-screen md:h-auto">
+        <div className="flex flex-col md:flex-row h-full">
+
+          {/* left side */}
+          <div className="w-full md:w-1/2 lg:w-3/5 flex items-center justify-center bg-black/5">
             <img
               src={media?.url}
               alt={media?.title || "Post"}
@@ -151,10 +148,10 @@ const CommentSection = ({ mediaId }) => {
             />
           </div>
 
-          {/* Right Side - Comment Section */}
-          <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col h-[90vh] md:h-[80vh]">
-            {/* Header */}
-            <div className="p-4 border-b border-border flex items-center flex-shrink-0 bg-bg-surface z-10">
+{/* right side */}
+          <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col h-full border-t md:border-t-0 border-border">
+            {/* Sticky Header */}
+            <div className="p-4 border-b border-border flex items-center sticky top-0 bg-bg-surface z-10">
               <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
                 <img
                   src={
@@ -173,16 +170,10 @@ const CommentSection = ({ mediaId }) => {
               </button>
             </div>
 
-            {/* Comments List (Scrollable) */}
+            {/* Scrollable Comments Area */}
             <div
-              className="
-                flex-1 overflow-y-auto p-4 space-y-4 bg-bg-surface
-                min-h-0
-                "
-              style={{
-                // For mobile: ensure comment list doesn't get pushed out of view
-                maxHeight: "calc(100vh - 220px)",
-              }}
+              className="flex-1 overflow-y-auto p-4 space-y-4"
+              style={{ height: "calc(100% - 150px)" }}
             >
               {comments.map((comment) => (
                 <div key={comment.id} className="flex group">
@@ -219,15 +210,15 @@ const CommentSection = ({ mediaId }) => {
               ))}
             </div>
 
-            {/* Action buttons & Comment Input (Fixed at bottom) */}
-            <div className="border-t border-border bg-bg-surface flex flex-col flex-shrink-0">
+            {/* Sticky Bottom Section */}
+            <div className="border-t border-border bg-bg-surface sticky bottom-0">
               <div className="p-4">
                 <div className="flex space-x-4 mb-2">
                   <button onClick={handleLike}>
                     {isLiked ? (
-                      <FiHeart className="text-error fill-error text-2xl " />
+                      <FiHeart className="text-error fill-error text-2xl" />
                     ) : (
-                      <IoMdHeartEmpty className="text-text-muted text-2xl " />
+                      <IoMdHeartEmpty className="text-text-muted text-2xl" />
                     )}
                   </button>
                 </div>
@@ -238,10 +229,11 @@ const CommentSection = ({ mediaId }) => {
                   {formatReadableDate(media?.createdAt)}
                 </div>
               </div>
-              {/* Comment input */}
+
+              {/* Comment Input (Sticks above mobile keyboard) */}
               <form
                 onSubmit={handleAddComment}
-                className="flex items-center border-t border-border pt-3 px-4 pb-4 bg-bg-surface"
+                className="flex items-center border-t border-border p-4 bg-bg-surface"
               >
                 <input
                   type="text"
@@ -266,10 +258,7 @@ const CommentSection = ({ mediaId }) => {
           </div>
         </div>
       </div>
-      {/* Responsive fix: add extra bottom padding for mobile so input is visible above keyboard */}
-      <div className="block md:hidden h-8" />
     </div>
   );
 };
-
 export default CommentSection;
