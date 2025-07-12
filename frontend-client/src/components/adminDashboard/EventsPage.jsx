@@ -13,18 +13,6 @@ import {
 import { useAdmin } from "../../context/AdminContext";
 import api from "../../services/BaseUrl";
 
-// Manual API instance (replace with your actual base URL)
-// const api = {
-//   post: async (url, data) => {
-//     const res = await fetch(`https://galleryevent-hackathon.onrender.com${url}`, {
-//       method: "POST",
-//       body: data,
-//     });
-//     if (!res.ok) throw new Error("API error");
-//     return res.json();
-//   },
-// };
-
 const initialForm = {
   title: "",
   description: "",
@@ -125,13 +113,13 @@ const EventsPage = () => {
   };
 
   return (
-    <div className="bg-bg-body p-6">
+    <div className="bg-bg-body p-4 sm:p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-text-heading">Manage Events</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold text-text-heading">Manage Events</h1>
         <button
           onClick={openCreate}
-          className="flex items-center bg-primary hover:bg-primary-hover text-text-inverted px-4 py-2 rounded-lg"
+          className="flex items-center bg-primary hover:bg-primary-hover text-text-inverted px-3 py-2 sm:px-4 rounded-lg w-full sm:w-auto justify-center"
         >
           <FiPlus className="mr-2" />
           Create Event
@@ -140,45 +128,45 @@ const EventsPage = () => {
 
       {/* Loading */}
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <FiLoader className="animate-spin text-4xl text-primary" />
+        <div className="flex justify-center items-center h-40 sm:h-64">
+          <FiLoader className="animate-spin text-3xl sm:text-4xl text-primary" />
         </div>
       ) : (
         <div className="bg-bg-surface rounded-lg shadow-card overflow-hidden border border-border">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-border">
+            <table className="min-w-full divide-y divide-border text-sm">
               <thead className="bg-bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Event</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Department</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Actions</th>
+                  <th className="px-2 sm:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Event</th>
+                  <th className="px-2 sm:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Department</th>
+                  <th className="px-2 sm:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Date</th>
+                  <th className="px-2 sm:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {safeEvents.map((event) => (
-                  <tr key={event.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={event.id} className="hover:bg-bg-muted transition-colors">
+                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <img
-                          className="h-10 w-10 rounded-md object-cover"
+                          className="h-8 w-8 sm:h-10 sm:w-10 rounded-md object-cover"
                           src={event.mediaUrl}
                           alt={event.title}
                           onError={(e) => {
                             e.target.src = "https://via.placeholder.com/40?text=Event";
                           }}
                         />
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-text-heading">{event.title}</div>
-                          <div className="text-sm text-text-muted line-clamp-1">{event.description}</div>
+                        <div className="ml-2 sm:ml-4">
+                          <div className="text-xs sm:text-sm font-medium text-text-heading">{event.title}</div>
+                          <div className="text-xs sm:text-sm text-text-muted line-clamp-1">{event.description}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-body">{event.department}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-body">
+                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-text-body">{event.department}</td>
+                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-text-body">
                       {new Date(event.date).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
                       <div className="flex space-x-2">
                         <button onClick={() => openEdit(event)} className="text-primary hover:text-primary-hover">
                           <FiEdit2 />
@@ -198,56 +186,56 @@ const EventsPage = () => {
 
       {/* Create/Edit Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-bg-surface rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center border-b border-border p-4">
-              <h3 className="text-lg font-medium text-text-heading">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-50">
+          <div className="bg-bg-surface rounded-lg shadow-xl w-full max-w-xs sm:max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-border p-3 sm:p-4">
+              <h3 className="text-base sm:text-lg font-medium text-text-heading">
                 {editingId ? "Edit Event" : "Create New Event"}
               </h3>
               <button onClick={closeModal} className="text-text-muted hover:text-text-heading">
                 <FiX />
               </button>
             </div>
-            <form onSubmit={handleSubmit} className="p-4 space-y-4">
+            <form onSubmit={handleSubmit} className="p-3 sm:p-4 space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-medium text-text-heading mb-1">Title</label>
+                <label className="block text-xs sm:text-sm font-medium text-text-heading mb-1">Title</label>
                 <input
                   type="text"
                   name="title"
                   value={form.title}
                   onChange={handleInput}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full px-2 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-xs sm:text-sm"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-heading mb-1">Description</label>
+                <label className="block text-xs sm:text-sm font-medium text-text-heading mb-1">Description</label>
                 <textarea
                   name="description"
                   value={form.description}
                   onChange={handleInput}
                   rows={3}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full px-2 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-xs sm:text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-heading mb-1">Date</label>
+                <label className="block text-xs sm:text-sm font-medium text-text-heading mb-1">Date</label>
                 <input
                   type="date"
                   name="date"
                   value={form.date}
                   onChange={handleInput}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full px-2 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-xs sm:text-sm"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-heading mb-1">Department</label>
+                <label className="block text-xs sm:text-sm font-medium text-text-heading mb-1">Department</label>
                 <select
                   name="department"
                   value={form.department}
                   onChange={handleInput}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full px-2 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-xs sm:text-sm"
                 >
                   <option value="All">All</option>
                   <option value="IT">IT</option>
@@ -256,7 +244,7 @@ const EventsPage = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-heading mb-1">Event Image</label>
+                <label className="block text-xs sm:text-sm font-medium text-text-heading mb-1">Event Image</label>
                 <input
                   type="file"
                   ref={fileRef}
@@ -266,14 +254,14 @@ const EventsPage = () => {
                 />
                 <div
                   onClick={() => fileRef.current.click()}
-                  className="border-2 border-dashed border-border rounded-md p-4 text-center cursor-pointer hover:bg-bg-muted transition-colors"
+                  className="border-2 border-dashed border-border rounded-md p-3 sm:p-4 text-center cursor-pointer hover:bg-bg-muted transition-colors"
                 >
                   {form.previewUrl ? (
                     <div className="relative">
                       <img
                         src={form.previewUrl}
                         alt="Preview"
-                        className="h-40 w-full object-cover rounded-md mb-2"
+                        className="h-32 sm:h-40 w-full object-cover rounded-md mb-2"
                       />
                       <button
                         type="button"
@@ -288,24 +276,24 @@ const EventsPage = () => {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center space-y-2">
-                      <FiUpload className="text-2xl text-text-muted" />
-                      <p className="text-sm text-text-muted">Click to upload or drag and drop</p>
+                      <FiUpload className="text-xl sm:text-2xl text-text-muted" />
+                      <p className="text-xs sm:text-sm text-text-muted">Click to upload or drag and drop</p>
                       <p className="text-xs text-text-muted">JPG, PNG (Max 5MB)</p>
                     </div>
                   )}
                 </div>
               </div>
-              <div className="flex justify-end space-x-3 pt-4">
+              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-2 sm:pt-4">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 border border-border rounded-md text-text-body hover:bg-bg-muted"
+                  className="px-3 py-2 border border-border rounded-md text-text-body hover:bg-bg-muted text-xs sm:text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex items-center px-4 py-2 bg-primary hover:bg-primary-hover text-text-inverted rounded-md"
+                  className="flex items-center px-3 py-2 bg-primary hover:bg-primary-hover text-text-inverted rounded-md text-xs sm:text-sm"
                   disabled={
                     !form.title ||
                     !form.date ||
@@ -323,31 +311,31 @@ const EventsPage = () => {
 
       {/* Delete Modal */}
       {deleteModal.open && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-bg-surface rounded-lg shadow-xl max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50">
+          <div className="bg-bg-surface rounded-lg shadow-xl w-full max-w-xs sm:max-w-md p-4 sm:p-6">
             <div className="flex items-start">
-              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-error/10 flex items-center justify-center text-error">
+              <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-error/10 flex items-center justify-center text-error">
                 <FiAlertTriangle className="h-5 w-5" />
               </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-text-heading">Delete Event</h3>
-                <div className="mt-2 text-sm text-text-body">
+              <div className="ml-3 sm:ml-4">
+                <h3 className="text-base sm:text-lg font-medium text-text-heading">Delete Event</h3>
+                <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-text-body">
                   <p>Are you sure you want to delete this event? This action cannot be undone.</p>
                 </div>
               </div>
             </div>
-            <div className="mt-6 flex justify-end space-x-3">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 type="button"
                 onClick={closeDelete}
-                className="px-4 py-2 border border-border rounded-md text-text-body hover:bg-bg-muted"
+                className="px-3 py-2 border border-border rounded-md text-text-body hover:bg-bg-muted text-xs sm:text-sm"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleDelete}
-                className="flex items-center px-4 py-2 bg-error hover:bg-error/90 text-text-inverted rounded-md"
+                className="flex items-center px-3 py-2 bg-error hover:bg-error/90 text-text-inverted rounded-md text-xs sm:text-sm"
               >
                 <FiTrash2 className="mr-2" />
                 Delete

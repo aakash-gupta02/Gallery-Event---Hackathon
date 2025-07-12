@@ -47,10 +47,10 @@ const UsersPage = () => {
   };
 
   return (
-    <div className="bg-bg-body p-6">
+    <div className="bg-bg-body p-4 sm:p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-text-heading">Manage Users</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-2">
+        <h1 className="text-xl sm:text-2xl font-bold text-text-heading">Manage Users</h1>
         <div className="text-sm text-text-muted">
           {users.length} {users.length === 1 ? "user" : "users"} total
         </div>
@@ -58,122 +58,102 @@ const UsersPage = () => {
 
       {/* Loading State */}
       {loading && (
-        <div className="flex justify-center items-center h-64">
-          <FiLoader className="animate-spin text-4xl text-primary" />
+        <div className="flex justify-center items-center h-48 sm:h-64">
+          <FiLoader className="animate-spin text-3xl sm:text-4xl text-primary" />
         </div>
       )}
 
       {/* Users Table */}
       {!loading && (
-        <div className="bg-bg-surface rounded-lg shadow-card overflow-hidden border border-border">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-border">
-              <thead className="bg-bg-muted">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                    User
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                    Email
-                  </th>
-                  {/* <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                    Status
-                  </th> */}
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary-light text-primary flex items-center justify-center overflow-hidden">
-                          {user.profileImage ? (
-                            <img
-                              src={user.profileImage}
-                              alt={user.name}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <FiUser size={18} />
+        <div className="bg-bg-surface rounded-lg shadow-card overflow-x-auto border border-border">
+          <table className="min-w-full divide-y divide-border text-sm">
+            <thead className="bg-bg-muted">
+              <tr>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                  User
+                </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                  Email
+                </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {users.map((user) => (
+                <tr key={user.id} className="hover:bg-bg-muted transition">
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary-light text-primary flex items-center justify-center overflow-hidden">
+                        {user.profileImage ? (
+                          <img
+                            src={user.profileImage}
+                            alt={user.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <FiUser size={18} />
+                        )}
+                      </div>
+                      <div className="ml-3 sm:ml-4">
+                        <div className="text-xs sm:text-sm font-medium text-text-heading flex items-center">
+                          {user.name}
+                          {user.isAdmin && (
+                            <span className="ml-2 px-2 py-0.5 text-[10px] sm:text-xs rounded-full bg-primary-light text-primary">
+                              Admin
+                            </span>
                           )}
                         </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-text-heading">
-                            {user.name}
-                            {user.isAdmin && (
-                              <span className="ml-2 px-2 py-1 text-xs rounded-full bg-primary-light text-primary">
-                                Admin
-                              </span>
-                            )}
-                          </div>
-                   
-                        </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-body">
-                      {user.email}
-                    </td>
-
-                    {/* <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          user.isActive
-                            ? "bg-success/10 text-success"
-                            : "bg-error/10 text-error"
+                    </div>
+                  </td>
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-text-body break-all max-w-[120px] sm:max-w-xs">
+                    {user.email}
+                  </td>
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
+                    <div className="flex space-x-2 sm:space-x-3">
+                      <button
+                        onClick={() =>
+                          toggleAdminStatus(user.id, user.isAdmin)
+                        }
+                        disabled={actionLoading}
+                        className={`p-2 rounded-md ${
+                          user.isAdmin
+                            ? "text-primary hover:bg-primary-light"
+                            : "text-text-muted hover:bg-bg-muted"
                         }`}
+                        title={user.isAdmin ? "Remove admin" : "Make admin"}
                       >
-                        {user.isActive ? "Active" : "Inactive"}
-                      </span>
-                    </td> */}
-
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-3">
-                        <button
-                          onClick={() =>
-                            toggleAdminStatus(user.id, user.isAdmin)
-                          }
-                          disabled={actionLoading}
-                          className={`p-2 rounded-md ${
-                            user.isAdmin
-                              ? "text-primary hover:bg-primary-light"
-                              : "text-text-muted hover:bg-bg-muted"
-                          }`}
-                          title={user.isAdmin ? "Remove admin" : "Make admin"}
-                        >
-                          {actionLoading ? (
-                            <FiLoader className="animate-spin" />
-                          ) : (
-                            <FiUserCheck />
-                          )}
-                        </button>
-                        {/* <button
-                          onClick={() =>
-                            setDeleteModal({
-                              open: true,
-                              userId: user.id,
-                              userName: user.name,
-                            })
-                          }
-                          className={`p-2 rounded-md ${
-                            user.isAdmin
-                              ? "text-error hover:bg-error/10"
-                              : "text-text-muted hover:bg-bg-muted"
-                          }`}
-                          title="Delete user"
-                        >
-                          <FiTrash2 />
-                        </button> */}
-                
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                        {actionLoading ? (
+                          <FiLoader className="animate-spin" />
+                        ) : (
+                          <FiUserCheck />
+                        )}
+                      </button>
+                      {/* <button
+                        onClick={() =>
+                          setDeleteModal({
+                            open: true,
+                            userId: user.id,
+                            userName: user.name,
+                          })
+                        }
+                        className={`p-2 rounded-md ${
+                          user.isAdmin
+                            ? "text-error hover:bg-error/10"
+                            : "text-text-muted hover:bg-bg-muted"
+                        }`}
+                        title="Delete user"
+                      >
+                        <FiTrash2 />
+                      </button> */}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
