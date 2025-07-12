@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import EventGallery from "./pages/eventGallery/EventGallery";
 import OfficeGalleryLanding from "./components/OfficeGalleryLanding";
 import EventMediaByID from "./pages/media/EventMediaByID";
+import AdminMainLayout from "./pages/adminLayout/AdminMainLayout";
 
 const App = () => {
   return (
@@ -14,10 +15,13 @@ const App = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
-        <Route path="/landing" element={ <OfficeGalleryLanding/>  } />
+        <Route path="/landing" element={<OfficeGalleryLanding />} />
 
         <Route path="/event" element={<EventGallery />} />
-        <Route path="/event/:id" element={<EventMediaByID/>} />
+        <Route path="/event/:id" element={<EventMediaByID />} />
+
+
+        <Route path="/admin" element={ <AdminMainLayout/> } />
       </Routes>
     </div>
   );

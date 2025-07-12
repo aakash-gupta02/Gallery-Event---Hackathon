@@ -5,12 +5,15 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { EventProvider } from "./context/EventContext.jsx";
+import { AdminProvider } from "./context/AdminContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AuthProvider>
       <EventProvider>
-        <App />
+        <AdminProvider>
+          <App />
+        </AdminProvider>
       </EventProvider>
     </AuthProvider>
   </BrowserRouter>

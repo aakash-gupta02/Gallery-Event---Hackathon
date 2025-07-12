@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { createEvent, getEvents, getEventById, updateEvent, deleteEvent, recentEvents } from "../controller/event.controller";
+import { createEvent, getEvents, getEventById, updateEvent, deleteEvent, recentEvents, adminGetEvents } from "../controller/event.controller";
 import { isAdminMiddleware } from "../middleware/isAdmin.middleware";       
 import { authMiddleware } from "../middleware/autth.middleware";
 import { mediaUpload } from "../middleware/multer";
@@ -11,6 +11,8 @@ const router = Router();
 router.get("/recent", recentEvents );
 
 router.use(authMiddleware); 
+
+router.get("/admin/all", isAdminMiddleware, adminGetEvents )
 
 router.post("/create", mediaUpload, isAdminMiddleware, createEvent);
 router.get("/get", getEvents);

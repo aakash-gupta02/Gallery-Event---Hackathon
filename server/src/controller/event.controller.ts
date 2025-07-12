@@ -2,8 +2,12 @@ import { Response, Request } from "express";
 import { Event } from "../entity/Event";
 import { datasource } from "../config/datasource";
 import { v2 as cloudinary } from "cloudinary";
+import { Like } from "../entity/Like";
+import { Comment } from "../entity/Comment";
 
 const eventRepo = datasource.getRepository(Event);
+const likeRepo = datasource.getRepository(Like);
+const commentRepo = datasource.getRepository(Comment);
 
 export const createEvent = async (req: Request, res: Response): Promise<void> => {
     const { title, date, department, description } = req.body;
@@ -113,7 +117,6 @@ export const getEventById = async (req: Request, res: Response): Promise<void> =
     }
 }
 
-
 export const deleteEvent = async (req: Request, res: Response): Promise<void> => {
 
     const { id } = req.params;
@@ -134,3 +137,41 @@ export const deleteEvent = async (req: Request, res: Response): Promise<void> =>
 
 
 }
+
+
+export const adminGetEvents = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const events = await eventRepo.find();
+
+        const totalEvents = events.length;
+
+        // Calculate total likes and comments from their respective entities
+        const totalLikes = await likeRepo.count();
+        const totalComments = await commentRepo.count();
+
+        // Add likes and comments count to each event
+        const eventsWithCounts = await Promise.all(
+            events.map(async (event) => {
+            const likesCount = await likeRepo.count({ where: { media: { id: event.id } } });
+            const commentsCount = await commentRepo.count({ where: { media: { id: event.id } } });
+            return {
+                ...event,
+                likesCount,
+                commentsCount
+            };
+            })
+        );
+
+        res.status(200).json({
+            totalEvents,
+            totalLikes,
+            totalComments,
+            events: eventsWithCounts 
+            // events
+        });
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
