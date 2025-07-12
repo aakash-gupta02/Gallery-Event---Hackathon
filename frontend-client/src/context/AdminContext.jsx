@@ -4,7 +4,7 @@ import axios from "axios";
 const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-  const [media_event, setmedia_event] = useState([])
+  const [comments, setcomments] = useState([]);
   const [media, setMedia] = useState([]);
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
@@ -48,7 +48,7 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-    const fetchmedia = async () => {
+  const fetchmedia = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -67,12 +67,32 @@ export const AdminProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  
+
+  const fetchcomments = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:3000/comment/getadmin", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setcomments(res.data);
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchEvents();
     fetchUsers();
-    fetchmedia()
+    fetchmedia();
+    fetchcomments();
   }, []);
 
   return (
@@ -81,11 +101,13 @@ export const AdminProvider = ({ children }) => {
         users,
         events,
         media,
+        comments,
         loading,
 
         refreshEvents: fetchEvents, // allow manual refresh
         refreshUsers: fetchUsers, // allow manual refresh
         refreshMedia: fetchmedia, // allow manual refresh
+        refreshComments: fetchcomments, // allow manual refresh
       }}
     >
       {children}

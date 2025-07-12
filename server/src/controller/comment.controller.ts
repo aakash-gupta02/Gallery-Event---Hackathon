@@ -37,7 +37,7 @@ export const createComment = async (req: Request, res: Response): Promise<void> 
             },
             media: {
                 id: media.id,
-            
+
             }
         });
         return;
@@ -71,7 +71,41 @@ export const getComments = async (req: Request, res: Response): Promise<void> =>
             } : null,
             media: comment.media ? {
                 id: comment.media.id,
-                        } : null
+            } : null
+        }));
+
+        res.status(200).json(filteredComments);
+        return;
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+        res.status(500).json({ message: "Internal server error" });
+        return;
+    }
+};
+
+export const allComments = async (req: Request, res: Response): Promise<void> => {
+
+    try {
+        const comments = await commentRepository.find({
+
+            relations: ["user", "media"],
+            order: { createdAt: "DESC" }
+        });
+
+        // Map to only return necessary fields
+        const filteredComments = comments.map(comment => ({
+            id: comment.id,
+            text: comment.text,
+            createdAt: comment.createdAt,
+            user: comment.user ? {
+                id: comment.user.id,
+                name: comment.user.name,
+                email: comment.user.email,
+                profileImage: comment.user.profileImage,
+            } : null,
+            media: comment.media ? {
+                id: comment.media.id,
+            } : null
         }));
 
         res.status(200).json(filteredComments);

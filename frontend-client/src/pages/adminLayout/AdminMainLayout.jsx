@@ -14,10 +14,13 @@ import {
   FiChevronDown,
   FiLogOut,
   FiUser,
-  FiCreditCard
+  FiCreditCard,
+  FiImage,
+  FiMessageSquare,
 } from "react-icons/fi";
 import UsersPage from "../../components/adminDashboard/UsersPage";
 import MediaGallery from "../../components/adminDashboard/MediaGallery";
+import CommentsPage from "../../components/adminDashboard/CommentsPage";
 
 const AdminMainLayout = () => {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -53,13 +56,15 @@ const AdminMainLayout = () => {
     navigate("/login");
   };
 
+  
   const menuItems = [
     { key: "dashboard", label: "Dashboard", icon: <FiHome className="mr-3" /> },
     { key: "events", label: "Events", icon: <FiCalendar className="mr-3" /> },
     { key: "users", label: "Users", icon: <FiUsers className="mr-3" /> },
-    { key: "media", label: "media", icon: <FiHelpCircle className="mr-3" /> },
-    { key: "analytics", label: "Analytics", icon: <FiBarChart2 className="mr-3" /> },
-    { key: "settings", label: "Settings", icon: <FiSettings className="mr-3" /> },
+    { key: "media", label: "Media", icon: <FiImage className="mr-3" /> }, // FiImage for media
+    { key: "comments", label: "Comments", icon: <FiMessageSquare className="mr-3" /> },
+    // { key: "analytics", label: "Analytics", icon: <FiBarChart2 className="mr-3" /> },
+    // { key: "settings", label: "Settings", icon: <FiSettings className="mr-3" /> },
   ];
 
   return (
@@ -206,6 +211,7 @@ const AdminMainLayout = () => {
           {activeMenu === "events" && <EventsPage />}
           {activeMenu === "users" && <UsersPage />}
           {activeMenu === "media" && <MediaGallery/> }
+          {activeMenu === "comments" &&  <CommentsPage/> }
           {activeMenu === "analytics" && <div>Analytics</div>}
           {activeMenu === "settings" && <div>Settings</div>}
         </main>
