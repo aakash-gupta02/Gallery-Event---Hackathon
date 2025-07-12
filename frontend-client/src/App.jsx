@@ -8,6 +8,7 @@ import OfficeGalleryLanding from "./components/OfficeGalleryLanding";
 import EventMediaByID from "./pages/media/EventMediaByID";
 import AdminMainLayout from "./pages/adminLayout/AdminMainLayout";
 import { useAuth } from "./context/AuthContext";
+import NotFoundPage from "./components/NotFoundPage";
 
 // ProtectedRoute component
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
+        <Route path="*" element={<NotFoundPage />} />
         <Route
           path="/landing"
           element={
