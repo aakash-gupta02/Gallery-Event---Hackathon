@@ -14,7 +14,7 @@ export const AdminProvider = ({ children }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/event/admin/all", {
+      const res = await axios.get("https://galleryevent-hackathon.onrender.com/event/admin/all", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -33,7 +33,7 @@ export const AdminProvider = ({ children }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/auth/get", {
+      const res = await axios.get("https://galleryevent-hackathon.onrender.com/auth/get", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ export const AdminProvider = ({ children }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/media/", {
+      const res = await axios.get("https://galleryevent-hackathon.onrender.com/media/", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ export const AdminProvider = ({ children }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/comment/getadmin", {
+      const res = await axios.get("https://galleryevent-hackathon.onrender.com/comment/getadmin", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

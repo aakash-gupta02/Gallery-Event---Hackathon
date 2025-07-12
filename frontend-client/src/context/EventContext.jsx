@@ -11,7 +11,7 @@ export const EventProvider = ({ children }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/event/get", {
+      const res = await axios.get("https://galleryevent-hackathon.onrender.com/event/get", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

@@ -16,7 +16,7 @@ import api from "../../services/BaseUrl";
 // Manual API instance (replace with your actual base URL)
 // const api = {
 //   post: async (url, data) => {
-//     const res = await fetch(`http://localhost:3000${url}`, {
+//     const res = await fetch(`https://galleryevent-hackathon.onrender.com${url}`, {
 //       method: "POST",
 //       body: data,
 //     });
