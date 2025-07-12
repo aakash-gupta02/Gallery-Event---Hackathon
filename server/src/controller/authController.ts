@@ -11,14 +11,14 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-         res.status(400).json({ message: "All fields are required" });
+            res.status(400).json({ message: "All fields are required" });
             return;
         }
 
         const existingUser = await userRepo.findOne({ where: { email } });
 
         if (existingUser) {
-         res.status(409).json({ message: "Email already registered" });
+            res.status(409).json({ message: "Email already registered" });
             return;
         }
 
@@ -34,7 +34,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
         await userRepo.save(newUser);
 
-     res.status(201).json({
+        res.status(201).json({
             message: "User registered successfully",
             user: {
                 id: newUser.id,
@@ -47,7 +47,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
     } catch (err) {
         console.error("Register error:", err);
-     res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: "Server error" });
         return;
     }
 };
@@ -99,7 +99,52 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+    try {
 
+        const user = await userRepo.find()
 
+        res.status(200).json({
+            message: "User fetched successfully",
+            user
+        });
 
+    } catch (err) {
+        console.error("Get user error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+export const toggleAdmin = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const user = await userRepo.findOneBy({ id: parseInt(id) });
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        user.isAdmin = !user.isAdmin;
+        await userRepo.save(user);
+
+        res.status(200).json({
+            message: user.isAdmin
+                ? "User promoted to admin successfully"
+                : "User demoted to normal user successfully",
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                isAdmin: user.isAdmin,
+                profileImage: user.profileImage
+            }
+        });
+
+    } catch (error) {
+        console.error("Error toggling admin status:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
 

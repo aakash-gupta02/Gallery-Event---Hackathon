@@ -92,6 +92,39 @@ export const getMedia = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+// all media
+export const getMedia_Event = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Get all events
+        const events = await eventRepo.find();
+
+        // For each event, get its media
+        const eventsWithMedia = await Promise.all(
+            events.map(async (event) => {
+                const media = await mediaRepo.find({
+                    where: { event: { id: event.id } },
+                    relations: ["user", "event"],
+                    order: { createdAt: "DESC" },
+                });
+                return {
+                    event,
+                    media,
+                };
+            })
+        );
+
+        res.status(200).json({
+            message: "Events with their corresponding media retrieved successfully",
+            data: eventsWithMedia,
+        });
+    } catch (error) {
+        console.error("Error retrieving events with media:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+
 // approving nedia
 export const approveMedia = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -153,6 +186,10 @@ export const deleteMedia = async (req: Request, res: Response): Promise<void> =>
             res.status(403).json({ message: "Not authorized to delete this media" });
             return;
         }
+
+        // Delete related likes and comments first to avoid foreign key constraint errors
+        await likeRepo.delete({ media: { id: media.id } });
+        await commentRepo.delete({ media: { id: media.id } });
 
         await mediaRepo.remove(media);
 

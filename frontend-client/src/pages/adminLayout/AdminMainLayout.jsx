@@ -16,6 +16,8 @@ import {
   FiUser,
   FiCreditCard
 } from "react-icons/fi";
+import UsersPage from "../../components/adminDashboard/UsersPage";
+import MediaGallery from "../../components/adminDashboard/MediaGallery";
 
 const AdminMainLayout = () => {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -55,9 +57,9 @@ const AdminMainLayout = () => {
     { key: "dashboard", label: "Dashboard", icon: <FiHome className="mr-3" /> },
     { key: "events", label: "Events", icon: <FiCalendar className="mr-3" /> },
     { key: "users", label: "Users", icon: <FiUsers className="mr-3" /> },
+    { key: "media", label: "media", icon: <FiHelpCircle className="mr-3" /> },
     { key: "analytics", label: "Analytics", icon: <FiBarChart2 className="mr-3" /> },
     { key: "settings", label: "Settings", icon: <FiSettings className="mr-3" /> },
-    { key: "support", label: "Support", icon: <FiHelpCircle className="mr-3" /> },
   ];
 
   return (
@@ -202,10 +204,10 @@ const AdminMainLayout = () => {
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">
           {activeMenu === "dashboard" && <Dashboard />}
           {activeMenu === "events" && <EventsPage />}
-          {activeMenu === "users" && <div>Users Management</div>}
+          {activeMenu === "users" && <UsersPage />}
+          {activeMenu === "media" && <MediaGallery/> }
           {activeMenu === "analytics" && <div>Analytics</div>}
           {activeMenu === "settings" && <div>Settings</div>}
-          {activeMenu === "support" && <div>Support</div>}
         </main>
       </div>
     </div>

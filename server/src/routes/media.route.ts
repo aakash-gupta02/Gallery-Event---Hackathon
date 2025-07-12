@@ -9,7 +9,8 @@ import {
     getMediaByUser, 
     getMediaById, 
     rejectMedia, 
-    listApprovedMedia 
+    listApprovedMedia, 
+    getMedia_Event
 } from "../controller/media.controllewr";
 import { authMiddleware } from "../middleware/autth.middleware";
 import { isAdminMiddleware } from "../middleware/isAdmin.middleware";
@@ -23,6 +24,7 @@ router.post("/upload", mediaUpload, uploadMedia);
 
 // all media for admin
 router.get("/", isAdminMiddleware, getMedia);
+router.get("/media-event", isAdminMiddleware, getMedia_Event)
 
 // list approved media for user
 router.get("/approved",  listApprovedMedia);
@@ -38,10 +40,10 @@ router.get("/:mediaId", getMediaById);
 
 
 // approve or reject media
-router.post("/approve/:mediaId", isAdminMiddleware, approveMedia);
+router.put("/approve/:mediaId", isAdminMiddleware, approveMedia);
 router.post("/reject/:mediaId", isAdminMiddleware, rejectMedia);
 
 // delete media by owner or admin
-router.delete("/delete/:id", deleteMedia);
+router.delete("/delete/:mediaId", deleteMedia);
 
 export default router;
