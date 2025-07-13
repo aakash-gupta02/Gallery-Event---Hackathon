@@ -33,10 +33,12 @@ Built in **10 days** for the *Digital Innovation Hackathon*.
 | Category       | Technologies Used |  
 |---------------|------------------|  
 | **Frontend**  | React, TailwindCSS, Framer Motion |  
-| **Backend**   | Node.js, Express, MySQL |  
+| **Backend**   | Node.js, Express, Typescript |  
 | **Cloud**     | Cloudinary (Media Storage) |  
 | **Auth**      | JWT, Bcrypt |  
-| **DevOps**    | Docker, GitHub Actions |  
+| **Database**    | MySQL |  
+| **Deploy & Devops**    | Render, Railway |  
+
 
 ---
 
@@ -52,7 +54,7 @@ cloudinary.uploader.upload(file, { folder: "events" });
 
 ### **2. Event Timeline**  
 - Chronological view with interactive filters  
-![Timeline View](https://i.imgur.com/JkLmY7E.png)  
+[![Screenshot-2025-07-12-214958.png](https://i.postimg.cc/k4SvLkKq/Screenshot-2025-07-12-214958.png)](https://postimg.cc/LYHP1Qxb) 
 
 ### **3. Admin Moderation**  
 - Approve/reject media with audit logs  
@@ -63,7 +65,7 @@ SELECT * FROM media WHERE approved = false;
 
 ### **4. Engagement Analytics**  
 - Real-time stats on likes/comments  
-![Analytics Dashboard](https://i.imgur.com/8GzQ1pX.png)  
+[![image.png](https://i.postimg.cc/zvxmRbBd/image.png)](https://postimg.cc/sGGHk25S)  
 
 ---
 
@@ -101,18 +103,14 @@ npm run dev
 ## **📸 Screenshots & Walkthrough**  
 
 ### **1. Landing Page**  
-![Hero Section](https://i.imgur.com/Lp3qV9T.png)  
+[![Screenshot-2025-07-12-214852.png](https://i.postimg.cc/8khb4gTb/Screenshot-2025-07-12-214852.png)](https://postimg.cc/w3jJxPyt) 
 
-### **2. Dashboard**  
+### **2. Admin Dashboard**  
 - Visual stats + quick actions  
-![Dashboard](https://i.imgur.com/9RZfLgE.png)  
+[![Screenshot-2025-07-12-215033.png](https://i.postimg.cc/Gt1xRqxY/Screenshot-2025-07-12-215033.png)](https://postimg.cc/vg3VL7jH)
 
 ### **3. Media Upload Flow**  
-![Upload Modal](https://i.imgur.com/Wc3YFdP.gif)  
-
-### **4. Admin Panel**  
-![Admin View](https://i.imgur.com/4x5nK8B.png)  
-
+[![Screenshot-2025-07-12-215940.png](https://i.postimg.cc/D0J0CTXP/Screenshot-2025-07-12-215940.png)](https://postimg.cc/QKDjtvSF)
 ---
 
 ## **🔥 Challenges & Solutions**  
@@ -120,15 +118,7 @@ npm run dev
 | Challenge | Solution |  
 |-----------|----------|  
 | **Large file uploads** | Used Cloudinary + chunked uploads |  
-| **Real-time updates** | Socket.IO for live notifications |  
 | **Mobile responsiveness** | Tailwind’s flex/grid system |  
-
-```javascript
-// Socket.IO implementation
-socket.on("new_upload", (data) => {
-  updateGallery(data);
-});
-```
 
 ---
 
@@ -142,9 +132,9 @@ socket.on("new_upload", (data) => {
 ## **👥 Team**  
 | Name | Role | Contribution |  
 |------|------|-------------|  
-| Alex | Full-Stack | Backend API |  
-| Jamie | UI/UX | Dashboard Design |  
-| Taylor | DevOps | Deployment Pipeline |  
+| Aakash | Full-Stack | Frontend & Authentication |  
+| Roshan | Backend | Backend API |  
+| Ajay | Moderator | Team Moderation |  
 
 ---
 
@@ -158,8 +148,8 @@ This project solves **real corporate pain points** with:
 
 --- 
 
-**Repo Link:** [github.com/your-repo](https://github.com/your-repo)  
-**Demo Video:** [YouTube](https://youtube.com/your-demo)  
+**Repo Link:** [github.com/Gallery-Event](https://github.com/aakash-gupta02/Gallery-Event---Hackathon)  
+**Live Link:** [Event Gallery](https://gallery-event-hackathon.onrender.com/)  
 
 --- 
 
@@ -170,7 +160,7 @@ This project solves **real corporate pain points** with:
 ### **Screenshots Appendix**  
 | Feature | Screenshot |  
 |---------|-----------|  
-| **Mobile View** | ![Mobile](https://i.imgur.com/5XwvR9A.png) |  
-| **Moderation Queue** | ![Moderation](https://i.imgur.com/VvVJk7c.png) |  
+| **Mobile View** | [![Screenshot-2025-07-12-215207.png](https://i.postimg.cc/W4hnwD4D/Screenshot-2025-07-12-215207.png)](https://postimg.cc/KKhBZ8BF) |  
+| **Moderation Queue** | [![Screenshot-2025-07-12-215243.png](https://i.postimg.cc/bw6gn0qc/Screenshot-2025-07-12-215243.png)](https://postimg.cc/v4V5FV13) |  
 
 --- 
