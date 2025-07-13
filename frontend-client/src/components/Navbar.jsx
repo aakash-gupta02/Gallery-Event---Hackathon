@@ -11,21 +11,18 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 
-const Navbar = () => {
+const Navbar = ({ onNavClick }) => {
   const { user, logout } = useAuth();
+  const FeatureRef = useRef(null);
 
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
-  // useEffect(() => {
-  //   const handler = (e) => {
-  //     if (menuRef.current && !menuRef.current.contains(e.target))
-  //       setOpen(false);
-  //   };
-  //   document.addEventListener("mousedown", handler);
-  //   return () => document.removeEventListener("mousedown", handler);
-  // }, []);
+  const scrollToSection = (ref) => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
 
   useEffect(() => {
     if (!open) return;
@@ -63,7 +60,7 @@ const Navbar = () => {
       <div className="hidden md:flex items-center gap-6">
         <button
           className="text-text-body hover:text-primary transition-colors focus:outline-none focus:text-primary-hover px-2 py-1 rounded"
-          onClick={() => navigate("/")}
+          onClick={onNavClick.hero}
         >
           Home
         </button>
@@ -75,13 +72,13 @@ const Navbar = () => {
         </button>
         <button
           className="text-text-body hover:text-primary transition-colors focus:outline-none focus:text-primary-hover px-2 py-1 rounded"
-          onClick={() => navigate("/features")}
+          onClick={onNavClick.features}
         >
           Features
         </button>
         <button
           className="text-text-body hover:text-primary transition-colors focus:outline-none focus:text-primary-hover px-2 py-1 rounded"
-          onClick={() => navigate("/gallery")}
+          onClick={onNavClick.gallery}
         >
           Gallery
         </button>
@@ -174,17 +171,6 @@ const Navbar = () => {
                   </button>
                 )}
 
-                {/* setting */}
-                {/* <button
-                  className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
-                  onClick={() => {
-                    setOpen(false);
-                    navigate("/settings");
-                  }}
-                >
-                  <FaCog /> Settings
-                </button> */}
-
                 {/* home */}
                 <button
                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
@@ -208,55 +194,6 @@ const Navbar = () => {
                   </svg>
                   Home
                 </button>
-
-                {/* about */}
-                {/* <button
-                  className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
-                  onClick={() => {
-                    setOpen(false);
-                    navigate("/about");
-                  }}
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"
-                    ></path>
-                  </svg>
-                  About
-                </button> */}
-
-                {/* features */}
-                {/* 
-                <button
-                  className="w-full flex items-center gap-2 px-4 py-2 hover:bg-primary-light focus:bg-primary-light text-text-body transition-colors focus:outline-none"
-                  onClick={() => {
-                    setOpen(false);
-                    navigate("/features");
-                  }}
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9.75 17L9 21m6-4l.75 4m-7.5-4h9m-9 0a2.25 2.25 0 01-2.25-2.25V7.5A2.25 2.25 0 017.5 5.25h9A2.25 2.25 0 0118.75 7.5v7.25A2.25 2.25 0 0116.5 17h-9z"
-                    ></path>
-                  </svg>
-                  Features
-                </button> */}
 
                 {/* gallery/ event */}
                 <button
@@ -321,7 +258,7 @@ const Navbar = () => {
               className="text-text-body text-left py-2 px-2 rounded hover:bg-primary-light focus:bg-primary-light transition-colors focus:outline-none"
               onClick={() => {
                 setOpen(false);
-                navigate("/");
+                onNavClick.hero();
               }}
             >
               Home
@@ -339,7 +276,7 @@ const Navbar = () => {
               className="text-text-body text-left py-2 px-2 rounded hover:bg-primary-light focus:bg-primary-light transition-colors focus:outline-none"
               onClick={() => {
                 setOpen(false);
-                navigate("/features");
+                onNavClick.features();
               }}
             >
               Features
@@ -348,7 +285,7 @@ const Navbar = () => {
               className="text-text-body text-left py-2 px-2 rounded hover:bg-primary-light focus:bg-primary-light transition-colors focus:outline-none"
               onClick={() => {
                 setOpen(false);
-                navigate("/gallery");
+                onNavClick.gallery();
               }}
             >
               Gallery

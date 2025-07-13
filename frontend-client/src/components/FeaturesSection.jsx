@@ -2,13 +2,18 @@ import { FaUserShield, FaUpload, FaImages, FaThumbsUp, FaComments } from "react-
 import { MdAdminPanelSettings, MdSearch } from "react-icons/md";
 import { FiMenu, FiX, FiSearch, FiCalendar, FiImage, FiHeart, FiShare2, FiUser, FiLogOut, FiSettings, FiAward, FiUsers, FiTrendingUp, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { useRef } from "react";
 
 
 
 
 const FeaturesSection = () => {
+
+  const FeatureRef = useRef(null);
+
+
   return (
-   <div className="py-12 bg-bg-muted">
+   <div ref={FeatureRef} className="py-12 bg-bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
             <h2 className="text-base text-primary font-semibold tracking-wide uppercase">Features</h2>

@@ -187,3 +187,31 @@ export const updateComment = async (req: Request, res: Response): Promise<void> 
     }
 };
 
+export const userComments = async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).user.id;
+
+    try {
+        const comments = await commentRepository.find({
+            where: { user: { id: userId } },
+            relations: ["media"],
+            order: { createdAt: "DESC" }
+        });
+
+        const filteredComments = comments.map(comment => ({
+            id: comment.id,
+            text: comment.text,
+            createdAt: comment.createdAt,
+            media: comment.media ? {
+                id: comment.media.id,
+                url: comment.media.url,
+            } : null
+        }));
+
+        res.status(200).json(filteredComments);
+        return;
+    } catch (error) {
+        console.error("Error fetching user comments:", error);
+        res.status(500).json({ message: "Internal server error" });
+        return;
+    }
+};

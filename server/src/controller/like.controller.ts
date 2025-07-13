@@ -140,3 +140,33 @@ export const isLiked = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
+
+export const getUserLikes = async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).user.id;
+
+    try {
+        const likes = await likeRepository.find({
+            where: { user: { id: userId } },
+            relations: ["media"],
+            order: { createdAt: "DESC" }
+        });
+
+        const userLikes = likes.map(like => ({
+            id: like.id,
+            media: like.media ? {
+                id: like.media.id,
+                title: (like.media as any).title,
+                url: (like.media as any).url
+            } : null,
+            createdAt: like.createdAt
+        }));
+
+        res.status(200).json({ userLikes, totalLikes: userLikes.length });
+        return;
+    } catch (error) {
+        console.error("Error fetching user likes:", error);
+        res.status(500).json({ message: "Internal server error" });
+        return;
+    }
+};
+

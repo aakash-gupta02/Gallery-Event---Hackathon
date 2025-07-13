@@ -9,6 +9,8 @@ import EventMediaByID from "./pages/media/EventMediaByID";
 import AdminMainLayout from "./pages/adminLayout/AdminMainLayout";
 import { useAuth } from "./context/AuthContext";
 import NotFoundPage from "./components/NotFoundPage";
+import AboutPage from "./components/AboutPage";
+import UserMainLayout from "./pages/userLayout/UserMainLayout";
 
 // ProtectedRoute component
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -30,6 +32,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route
           path="/landing"
           element={
@@ -54,6 +57,16 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <UserMainLayout />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/admin"
           element={
