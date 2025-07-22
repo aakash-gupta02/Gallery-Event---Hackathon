@@ -151,6 +151,7 @@ This project solves **real corporate pain points** with:
 **Repo Link:** [github.com/Gallery-Event](https://github.com/aakash-gupta02/Gallery-Event---Hackathon)  
 **Live Link:** [Event Gallery](https://gallery-event-hackathon.vercel.app/)  
 
+
 --- 
 
 **🎉 Happy Judging!** Let’s connect if you want a live walkthrough!  
