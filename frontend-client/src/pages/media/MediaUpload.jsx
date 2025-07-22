@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { FiUpload, FiX, FiImage, FiVideo, FiLoader } from "react-icons/fi";
 import api from "../../services/BaseUrl";
+import { toast } from "react-toastify";
 
 const MediaUpload = ({ eventId, onUploadSuccess }) => {
   const [files, setFiles] = useState([]);
@@ -18,6 +19,7 @@ const MediaUpload = ({ eventId, onUploadSuccess }) => {
 
     if (validFiles.length !== newFiles.length) {
       setError("Some files exceeded 50MB limit and were not added");
+      toast.warn("Some files exceeded 50MB limit and were not added");
     }
 
     setFiles([...files, ...validFiles]);
@@ -27,7 +29,9 @@ const MediaUpload = ({ eventId, onUploadSuccess }) => {
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
     setFiles(updatedFiles);
+
     setError(null);
+    toast.info("File removed");
   };
 
   const handleUpload = async () => {
@@ -59,10 +63,14 @@ const MediaUpload = ({ eventId, onUploadSuccess }) => {
       console.log("Upload response:", response.data);
 
       setFiles([]);
+      toast.success("Upload successful!");
       if (onUploadSuccess) onUploadSuccess(response.data);
     } catch (error) {
       console.error("Upload failed:", error);
       setError(
+        error.response?.data?.message || "Upload failed. Please try again."
+      );
+      toast.error(
         error.response?.data?.message || "Upload failed. Please try again."
       );
     } finally {

@@ -13,6 +13,7 @@ import { IoMdHeartEmpty } from "react-icons/io";
 import api from "../../services/BaseUrl";
 import CommentSection from "./CommentSection";
 import MediaUpload from "./MediaUpload";
+import { toast } from "react-toastify";
 
 const EventMediaByID = () => {
   const { id } = useParams();
@@ -60,6 +61,7 @@ const EventMediaByID = () => {
       console.error("Error fetching event media by ID:", error);
       setError("Failed to load media. Please try again later.");
       setLoading(false);
+      toast.error("Failed to load media. Please try again later.");
     }
   };
 
@@ -71,12 +73,14 @@ const EventMediaByID = () => {
           ...prev,
           [mediaId]: prev[mediaId] - 1,
         }));
+        toast.info("Like removed.");
       } else {
         await api.post(`/like/add/${mediaId}`);
         setMediaLikes((prev) => ({
           ...prev,
           [mediaId]: (prev[mediaId] || 0) + 1,
         }));
+        toast.success("Liked!");
       }
       setMediaLikeStatus((prev) => ({
         ...prev,
@@ -84,6 +88,7 @@ const EventMediaByID = () => {
       }));
     } catch (err) {
       setError("Failed to update like");
+      toast.error("Failed to update like.");
     }
   };
 
@@ -117,6 +122,7 @@ const EventMediaByID = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    toast.success("Download started!");
   };
 
   if (loading) {
@@ -477,24 +483,23 @@ const EventMediaByID = () => {
         </div>
 
         {/* Comments Section */}
-<div className="max-w-7xl mx-auto">
-      {showComments && (
-        <div
-          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 overflow-y-auto"
-          onClick={() => setShowComments(false)}
-        >
-          <div
-            className="bg-bg-surface rounded-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <CommentSection mediaId={showComments.id} />
-          </div>
+        <div className="max-w-7xl mx-auto">
+          {showComments && (
+            <div
+              className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 overflow-y-auto"
+              onClick={() => setShowComments(false)}
+            >
+              <div
+                className="bg-bg-surface rounded-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto flex flex-col"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <CommentSection mediaId={showComments.id} />
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
 
-
-{/* media uploads */}
+        {/* media uploads */}
         <div>
           {showUpload && (
             <div

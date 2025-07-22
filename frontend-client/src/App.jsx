@@ -11,12 +11,13 @@ import { useAuth } from "./context/AuthContext";
 import NotFoundPage from "./components/NotFoundPage";
 import AboutPage from "./components/AboutPage";
 import UserMainLayout from "./pages/userLayout/UserMainLayout";
+import { toast, ToastContainer } from "react-toastify";
 
 // ProtectedRoute component
 const ProtectedRoute = ({ isAuthenticated, children }) => {
   if (!isAuthenticated) {
     // Show a warning before redirecting
-    window.alert("Please login to access this page.");
+    toast.warning("Please login to access this page.");
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -27,6 +28,19 @@ const App = () => {
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+
       <Routes>
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<Login />} />

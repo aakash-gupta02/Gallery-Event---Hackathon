@@ -8,6 +8,7 @@ import {
   FiLoader,
 } from "react-icons/fi";
 import api from "../../services/BaseUrl";
+import { toast } from "react-toastify";
 
 const CommentsPage = () => {
   const { comments = [], loading, refreshComments } = useAdmin();
@@ -28,15 +29,17 @@ const CommentsPage = () => {
       await api.delete(`/comment/delete/${deleteModal.commentId}`);
 
       refreshComments();
+      toast.success("Comment deleted successfully.");
     } catch (error) {
       console.error("Failed to delete comment:", error);
+      toast.error("Failed to delete comment.");
     } finally {
       setDeletingId(null);
       setDeleteModal({ open: false, commentId: null, commentText: "" });
+
     }
   };
 
-  // Format date to relative time (e.g., "2 hours ago")
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();

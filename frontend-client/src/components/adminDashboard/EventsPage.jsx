@@ -12,6 +12,7 @@ import {
 } from "react-icons/fi";
 import { useAdmin } from "../../context/AdminContext";
 import api from "../../services/BaseUrl";
+import { toast } from "react-toastify";
 
 const initialForm = {
   title: "",
@@ -30,7 +31,6 @@ const EventsPage = () => {
   const [form, setForm] = useState(initialForm);
   const [deleteModal, setDeleteModal] = useState({ open: false, eventId: null });
   const fileRef = useRef();
-
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -88,16 +88,17 @@ const EventsPage = () => {
     if (editingId) fd.append("eventId", editingId);
 
     try {
-      
       if (editingId) {
         await api.put(`/event/update/${editingId}`, fd);
+        toast.success("Event updated successfully");
       } else {
         await api.post("/event/create", fd);
+        toast.success("Event created successfully");
       }
       closeModal();
       refreshEvents();
     } catch (err) {
-      alert("Error saving event");
+      toast.error("Error saving event");
     }
     if (form.previewUrl && form.mediaFile) URL.revokeObjectURL(form.previewUrl);
   };
@@ -106,10 +107,15 @@ const EventsPage = () => {
   const openDelete = (id) => setDeleteModal({ open: true, eventId: id });
   const closeDelete = () => setDeleteModal({ open: false, eventId: null });
   const handleDelete = async () => {
-    // Replace with your delete API call
-    // await api.post("/event/delete", { eventId: deleteModal.eventId });
-    closeDelete();
-    refreshEvents();
+    try {
+      await api.delete(`/event/delete/${deleteModal.eventId}`);
+      toast.success("Event deleted successfully");
+      closeDelete();
+      refreshEvents();
+    } catch (error) {
+      toast.error("Error deleting event");
+      return;
+    }
   };
 
   return (

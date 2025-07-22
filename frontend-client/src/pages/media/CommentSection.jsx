@@ -8,6 +8,7 @@ import {
 } from "react-icons/fi";
 import { IoMdHeartEmpty } from "react-icons/io";
 import api from "../../services/BaseUrl";
+import { toast } from "react-toastify";
 
 function formatReadableDate(dateString) {
   const date = new Date(dateString);
@@ -45,6 +46,7 @@ const CommentSection = ({ mediaId }) => {
         setLoading(false);
       } catch (err) {
         setError("Failed to load comments");
+        toast.error("Failed to load comments");
         setLoading(false);
       }
     };
@@ -52,8 +54,6 @@ const CommentSection = ({ mediaId }) => {
     const checkLiked = async () => {
       try {
         const res = await api.get(`/like/is-liked/${mediaId}`);
-        console.log("Is Liked Response:", res.data.liked);
-
         setIsLiked(res.data.liked);
       } catch (err) {
         setIsLiked(false);
@@ -74,8 +74,10 @@ const CommentSection = ({ mediaId }) => {
       });
       setComments([...comments, response.data]);
       setNewComment("");
+      toast.success("Comment posted!");
     } catch (err) {
       setError("Failed to post comment");
+      toast.error("Failed to post comment");
     }
   };
 
@@ -84,13 +86,16 @@ const CommentSection = ({ mediaId }) => {
       if (isLiked) {
         await api.delete(`/like/remove/${mediaId}`);
         setLikes(likes - 1);
+        toast.info("Like removed");
       } else {
         await api.post(`/like/add/${mediaId}`);
         setLikes(likes + 1);
+        toast.success("Liked!");
       }
       setIsLiked(!isLiked);
     } catch (err) {
       setError("Failed to update like");
+      toast.error("Failed to update like");
     }
   };
 
@@ -98,8 +103,10 @@ const CommentSection = ({ mediaId }) => {
     try {
       await api.delete(`/comment/delete/${commentId}`);
       setComments(comments.filter((comment) => comment.id !== commentId));
+      toast.success("Comment deleted");
     } catch (err) {
       setError("Failed to delete comment");
+      toast.error("Failed to delete comment");
     }
   };
 

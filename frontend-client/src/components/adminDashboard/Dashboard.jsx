@@ -154,7 +154,7 @@ const Dashboard = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-bg-surface rounded-lg shadow-card p-6 border border-border">
+      {/* <div className="bg-bg-surface rounded-lg shadow-card p-6 border border-border">
         <h2 className="text-xl font-semibold text-text-heading mb-6">
           Quick Actions
         </h2>
@@ -184,7 +184,8 @@ const Dashboard = () => {
             <span className="text-sm text-text-body">View Analytics</span>
           </button>
         </div>
-      </div>
+      </div> */}
+      
     </div>
   );
 };

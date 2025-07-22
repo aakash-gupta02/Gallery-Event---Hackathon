@@ -8,6 +8,7 @@ import {
 } from "react-icons/fi";
 import { useAdmin } from "../../context/AdminContext";
 import api from "../../services/BaseUrl";
+import { toast } from "react-toastify";
 
 const UsersPage = () => {
   const { users, loading, refreshUsers } = useAdmin();
@@ -38,6 +39,11 @@ const UsersPage = () => {
     setActionLoading(true);
     try {
       await api.put(`/auth/toggle-admin/${userId}`);
+      toast.success(
+      currentStatus
+        ? "User is no longer an admin."
+        : "User has been made an admin."
+      );
       refreshUsers();
     } catch (error) {
       console.error("Failed to update admin status:", error);

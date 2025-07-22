@@ -9,6 +9,7 @@ import {
 } from "react-icons/fi";
 import api from "../../services/BaseUrl";
 import { useAdmin } from "../../context/AdminContext";
+import { toast } from "react-toastify";
 
 const DeleteModal = ({ isOpen, onClose, onConfirm, title, description }) => {
   if (!isOpen) return null;
@@ -59,8 +60,10 @@ const MediaGallery = () => {
       setApprovingId(mediaId);
       const res = await api.put(`/media/approve/${mediaId}`);
       refreshMedia();
+      toast.success("Media approved successfully!");
     } catch (error) {
       console.error("Failed to approve media:", error);
+      toast.error("Failed to approve media.");
     } finally {
       setApprovingId(null);
     }
@@ -71,8 +74,10 @@ const MediaGallery = () => {
     try {
       await api.delete(`/media/delete/${deleteModal.mediaId}`);
       refreshMedia();
+      toast.success("Media deleted successfully!");
     } catch (error) {
       console.error("Failed to delete media:", error);
+      toast.error("Failed to delete media.");
     } finally {
       setDeleteModal({ open: false, mediaId: null, mediaUrl: "" });
     }
