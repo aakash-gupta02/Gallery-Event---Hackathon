@@ -11,7 +11,7 @@ import { useAuth } from "./context/AuthContext";
 import NotFoundPage from "./components/NotFoundPage";
 import AboutPage from "./components/AboutPage";
 import UserMainLayout from "./pages/userLayout/UserMainLayout";
-import { toast, ToastContainer } from "react-toastify";
+import {ToastContainer } from "react-toastify";
 
 // ProtectedRoute component
 const ProtectedRoute = ({ isAuthenticated, children }) => {
